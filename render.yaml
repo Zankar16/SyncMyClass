@@ -1,0 +1,25 @@
+services:
+  # Backend Node.js server
+  - type: web
+    name: fracture-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      # Add other environment variables like DATABASE_URL, JWT_SECRET, etc. here if required
+
+  # Frontend Static Site
+  - type: web
+    name: fracture-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://fracture-backend.onrender.com # Change this if the backend name is different
