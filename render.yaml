@@ -3,23 +3,38 @@ services:
   - type: web
     name: fracture-backend
     env: node
+    plan: free
     rootDir: backend
     buildCommand: npm install
     startCommand: node server.js
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 10000
-      # Add other environment variables like DATABASE_URL, JWT_SECRET, etc. here if required
+      # PORT is automatically injected by Render — do NOT set it manually
+      - key: JWT_SECRET
+        sync: false   # Set this in Render dashboard → Environment
+      # --- External MySQL (PlanetScale / Aiven) ---
+      - key: DB_HOST
+        sync: false   # e.g. aws.connect.psdb.cloud (PlanetScale) or your Aiven host
+      - key: DB_PORT
+        sync: false   # e.g. 3306 for Aiven, or 3306 for PlanetScale
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: DB_SSL
+        value: "true"  # Required for PlanetScale & Aiven
 
   # Frontend Static Site
   - type: web
     name: fracture-frontend
     env: static
+    plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     envVars:
       - key: VITE_API_URL
-        value: https://fracture-backend.onrender.com # Change this if the backend name is different
+        value: https://fracture-backend.onrender.com
